@@ -1,0 +1,31 @@
+<div class="flex flex-col">
+  	<div (mousedown)="openMenu(menuItems.Filters)" class="border-b border-gray-300 p-4 flex items-center cursor-pointer">
+		<button class="mr-4">
+			<span class="mt-2 transform transition-transform duration-300 material-icons text-gray-500"
+				[ngClass]="{'rotate-90': activeMenuItem === menuItems.Filters, 'rotate-0': activeMenuItem !== menuItems.Filters}"
+			>
+				arrow_right
+			</span>
+		</button>
+		<span>Effects</span>
+	</div>
+	<div *ngIf="activeMenuItem === menuItems.Filters" class="p-4 transition-max-height duration-300 ease-in-out overflow-hidden max-h-0" [ngClass]="{ 'max-h-40': activeMenuItem === menuItems.Filters }">
+		<div>1</div>
+		<div>1</div>
+		<div>1</div>
+	</div>
+
+	<div (mousedown)="openMenu(menuItems.Advanced)" class="border-b border-gray-300 p-4 flex items-center cursor-pointer">
+		<button class="mr-4">
+			<span class="mt-2 transform transition-transform duration-300 material-icons text-gray-500"
+				[ngClass]="{'rotate-90':activeMenuItem === menuItems.Advanced, 'rotate-0': activeMenuItem !== menuItems.Advanced}"
+			>
+				arrow_right
+			</span>
+		</button>
+		<span>Advanced</span>
+	</div>
+	<div *ngIf="activeMenuItem === menuItems.Advanced" class="p-4">
+		42
+	</div>
+</div>

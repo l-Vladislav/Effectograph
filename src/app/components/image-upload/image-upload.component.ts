@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { PhotonService } from "../../services/photon.service";
 
 @Component({
 	selector: "app-image-upload",
@@ -10,6 +11,8 @@ import { Component } from "@angular/core";
 export class ImageUploadComponent {
 	uploadedFile: File | null = null;
 	imageUrl: string | ArrayBuffer | null = "";
+
+	constructor(private photonService: PhotonService) {}
 
 	onDragOver(event: DragEvent) {
 		event.preventDefault();
@@ -47,5 +50,12 @@ export class ImageUploadComponent {
 	removeImage() {
 		this.uploadedFile = null;
 		this.imageUrl = null;
+	}
+
+	applyEffect() {
+		const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+		const img = new Image();
+		img.src = this.imageUrl!.toString();
+		this.photonService.applyImageFilter(img, canvas);
 	}
 }
