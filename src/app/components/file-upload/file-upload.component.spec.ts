@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ImageMenuComponent } from "./image-menu.component";
+import { FileUploadComponent } from "./file-upload.component";
 
-describe("ImageMenuComponent", () => {
-	let component: ImageMenuComponent;
-	let fixture: ComponentFixture<ImageMenuComponent>;
+describe("UploadComponent", () => {
+	let component: FileUploadComponent;
+	let fixture: ComponentFixture<FileUploadComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ImageMenuComponent]
+			imports: [FileUploadComponent]
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(ImageMenuComponent);
+		fixture = TestBed.createComponent(FileUploadComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

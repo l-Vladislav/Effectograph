@@ -7,15 +7,11 @@ import { filter, open_image, putImageData } from "@silvia-odwyer/photon";
 export class PhotonService {
 	constructor() {}
 
-	async applyImageFilter(imageElement: HTMLImageElement, canvas: HTMLCanvasElement) {
+	async applyImageFilter(canvas: HTMLCanvasElement, filterName: string = "radio") {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
-		canvas.width = imageElement.width;
-		canvas.height = imageElement.height;
-		ctx.drawImage(imageElement, 0, 0);
-
 		const photonImage = open_image(canvas, ctx);
-		filter(photonImage, "Radio");
+		filter(photonImage, filterName);
 		putImageData(canvas, ctx, photonImage);
 	}
 }

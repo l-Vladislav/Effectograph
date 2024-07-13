@@ -1,0 +1,22 @@
+<div class="flex flex-col">
+	@for (group of menuGroups; track group) {
+		<div (mousedown)="openMenu(group)" class="border-b border-gray-300 p-4 flex items-center cursor-pointer">
+			<button class="mr-4">
+				<span class="mt-2 transform transition-transform duration-300 material-icons text-gray-500"
+					[ngClass]="{'rotate-90': group.isActive, 'rotate-0': group.isActive}"
+				>
+					arrow_right
+				</span>
+			</button>
+			<span>{{group.title}}</span>
+		</div>
+
+		@if (group.isActive) {
+			<div class="p-4">
+				@for (groupItem of group.items; track groupItem) {
+					<div (mousedown)="invokeMenuItemFunction(group.title, groupItem.title)">{{groupItem.title}}</div>
+				}
+			</div>
+		}
+	}
+</div>
