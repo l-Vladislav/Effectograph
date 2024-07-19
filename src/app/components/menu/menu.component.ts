@@ -1,11 +1,6 @@
 import { NgClass } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { MenuService } from "../../services/menu.service";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { IMenuGroup } from "../../models/menu-group.model";
-
-interface IMenuGroupPrepared extends IMenuGroup {
-	isActive: boolean;
-}
 
 @Component({
 	selector: "app-menu",
@@ -13,36 +8,24 @@ interface IMenuGroupPrepared extends IMenuGroup {
 	imports: [NgClass],
 	templateUrl: "./menu.component.html"
 })
-export class MenuComponent implements OnInit {
-	@Input() groups: IMenuGroup[] = [];
+export class MenuComponent {
+	@Input() menuGroups: IMenuGroup[] = [];
 
-	@Output() menuItemSelected = new EventEmitter<string>();
+	@Output() menuItemSelected = new EventEmitter<{ menuGroupTitle: string; menuItemTitle: string }>();
 
-	menuGroups: IMenuGroupPrepared[] = [];
+	currentOpenGroupIdx: number | undefined = undefined;
+	savedItemIndexes: Map<number, number> = new Map();
 
-	constructor(private menuService: MenuService) {
-		this.groups = menuService.getMockupMenuGroups();
+	openMenu(groupIdx: number) {
+		this.currentOpenGroupIdx = groupIdx;
 	}
 
-	ngOnInit(): void {
-		this.menuGroups = this.groups.map(group => {
-			return {
-				title: group.title,
-				items: group.items.map(groupItem => {
-					return { title: groupItem.title };
-				}),
-				isActive: false
-			};
-		});
+	selectGroupItem(menuGroupTitle: string, menuItemTitle: string, groupIdx: number, itemIdx: number) {
+		this.savedItemIndexes.set(groupIdx, itemIdx);
+		this.menuItemSelected.emit({ menuGroupTitle, menuItemTitle });
 	}
 
-	openMenu(menuGroup: IMenuGroupPrepared) {
-		this.menuGroups.forEach(menuItem => (menuItem.isActive = false));
-		menuGroup.isActive = true;
-	}
-
-	// should emit value outside
-	invokeMenuItemFunction(groupTitle: string, itemTitle: string) {
-		this.menuService.invokeMenuItemFunction(groupTitle, itemTitle);
+	isCurrentItemActive(groupIdx: number, itemIdx: number) {
+		return this.savedItemIndexes.get(groupIdx) === itemIdx ? true : false;
 	}
 }

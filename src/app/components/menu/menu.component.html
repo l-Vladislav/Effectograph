@@ -1,9 +1,11 @@
 <div class="flex flex-col">
-	@for (group of menuGroups; track group) {
-		<div (mousedown)="openMenu(group)" class="border-b border-gray-300 p-4 flex items-center cursor-pointer">
+	@for (group of menuGroups; track group; let groupIdx = $index) {
+		<div (mousedown)="openMenu(groupIdx)" class="border-b p-4 flex items-center cursor-pointer hover:border-gray-800"
+			[ngClass]="{'border-gray-300': groupIdx !== currentOpenGroupIdx, 'border-gray-500': groupIdx === currentOpenGroupIdx}"
+		>
 			<button class="mr-4">
-				<span class="mt-2 transform transition-transform duration-300 material-icons text-gray-500"
-					[ngClass]="{'rotate-90': group.isActive, 'rotate-0': group.isActive}"
+				<span class="mt-2 transform transition-transform duration-600 material-icons text-gray-500"
+					[ngClass]="{'rotate-90': groupIdx === currentOpenGroupIdx}"
 				>
 					arrow_right
 				</span>
@@ -11,10 +13,15 @@
 			<span>{{group.title}}</span>
 		</div>
 
-		@if (group.isActive) {
-			<div class="p-4">
-				@for (groupItem of group.items; track groupItem) {
-					<div (mousedown)="invokeMenuItemFunction(group.title, groupItem.title)">{{groupItem.title}}</div>
+		@if (groupIdx === currentOpenGroupIdx) {
+			<div class="p-4 ml-4" [ngClass]="{'lg:h-80': groupIdx !== group.items.length}">
+				@for (groupItem of group.items; track groupItem; let itemIdx = $index) {
+					<div class="mt-1" (mousedown)="selectGroupItem(group.title, groupItem.title, groupIdx, itemIdx)">
+						<span class="capitalize cursor-pointer hover:border-b-2 border-gray-800" 
+							[ngClass]="{ 'font-bold': isCurrentItemActive(groupIdx, itemIdx) }">
+							{{groupItem.title}}
+						</span>
+					</div>
 				}
 			</div>
 		}

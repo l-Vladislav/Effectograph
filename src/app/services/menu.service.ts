@@ -1,33 +1,55 @@
 import { Injectable } from "@angular/core";
 import { IMenuGroup } from "../models/menu-group.model";
 
-enum menuGroupNames {
-	filter = "filters",
-	advanced = "advanced"
+export enum AvailableMenuGroupTitles {
+	Filter = "Filters",
+	Effects = "Effects",
+	Transform = "Transform"
 }
 
-const _mockMenuGroups: IMenuGroup[] = [
+export enum AvailableFiltersMenuItemTitles {
+	None = "None",
+	lofi = "loFi",
+	radio = "radio",
+	Oceanic = "oceanic",
+	Marine = "marine",
+	Liquid = "liquid",
+	Diamante = "diamante",
+	Twenties = "twenties",
+	Mauve = "mauve",
+	Vintage = "vintage"
+}
+
+export enum AvailableEffectsMenuItemTitles {
+	None = "None",
+	Solarize = "solarize",
+	Oil_Painting = "oil painting",
+	Offset_Red = "offset red",
+	Ryo = "ryo"
+}
+
+export enum AvailableTransformMenuItemTitles {
+	None = "None",
+	Flip_Horizontal = "Flip Horizontal",
+	Flip_Vertical = "Flip Vertical"
+}
+
+export type MenuItemAction = {
+	[key: string]: () => void;
+};
+
+const _mockupMenuGroups: IMenuGroup[] = [
 	{
-		title: "filters",
-		items: [
-			{
-				title: "Lofi"
-			},
-			{
-				title: "Radio"
-			}
-		]
+		title: AvailableMenuGroupTitles.Filter,
+		items: Object.values(AvailableFiltersMenuItemTitles).map(title => ({ title }))
 	},
 	{
-		title: "advanced",
-		items: [
-			{
-				title: "Lofi"
-			},
-			{
-				title: "Radio"
-			}
-		]
+		title: AvailableMenuGroupTitles.Effects,
+		items: Object.values(AvailableEffectsMenuItemTitles).map(title => ({ title }))
+	},
+	{
+		title: AvailableMenuGroupTitles.Transform,
+		items: Object.values(AvailableTransformMenuItemTitles).map(title => ({ title }))
 	}
 ];
 
@@ -38,15 +60,18 @@ export class MenuService {
 	constructor() {}
 
 	getMockupMenuGroups() {
-		return _mockMenuGroups;
+		return _mockupMenuGroups;
 	}
 
-	invokeMenuItemFunction(groupTitle: string, itemTitle: string) {
-		switch (groupTitle) {
-			case menuGroupNames.filter:
-				return console.log(itemTitle);
-			case menuGroupNames.advanced:
-				return console.log(itemTitle);
-		}
+	invokeMenuItemFunction(combinedMenuItem: string, menuItemActions: MenuItemAction) {
+		if (!menuItemActions[combinedMenuItem]) return;
+		menuItemActions[combinedMenuItem]();
+	}
+
+	combineMenuItem(
+		menuGroupTitle: AvailableMenuGroupTitles,
+		menuItemTitle: AvailableFiltersMenuItemTitles | AvailableEffectsMenuItemTitles | AvailableTransformMenuItemTitles
+	): string {
+		return menuGroupTitle + "|" + menuItemTitle;
 	}
 }
