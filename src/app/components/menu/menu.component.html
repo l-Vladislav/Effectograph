@@ -1,9 +1,12 @@
-<div class="flex flex-col">
+<div class="flex flex-col"[ngClass]="{'opacity-50 pointer-events-none': doDisableMenu}">
 	@for (group of menuGroups; track group; let groupIdx = $index) {
 		<div (mousedown)="openMenu(groupIdx)" class="border-b p-4 flex items-center cursor-pointer hover:border-gray-800"
-			[ngClass]="{'border-gray-300': groupIdx !== currentOpenGroupIdx, 'border-gray-500': groupIdx === currentOpenGroupIdx}"
+			[ngClass]="{
+				'border-gray-300': groupIdx !== currentOpenGroupIdx, 
+				'border-gray-500': groupIdx === currentOpenGroupIdx
+			}"
 		>
-			<button class="mr-4">
+			<button class="mr-4" [disabled]="doDisableMenu">
 				<span class="mt-2 transform transition-transform duration-600 material-icons text-gray-500"
 					[ngClass]="{'rotate-90': groupIdx === currentOpenGroupIdx}"
 				>
@@ -11,6 +14,7 @@
 				</span>
 			</button>
 			<span>{{group.title}}</span>
+			<span></span>
 		</div>
 
 		@if (groupIdx === currentOpenGroupIdx) {

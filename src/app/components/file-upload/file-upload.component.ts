@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { catchError, concatMap, from, Observable, Observer, of, take } from "rxjs";
 
-export enum uploadFileMimeTypes {
+enum uploadFileMimeTypes {
 	img = "image/(png|jpeg)",
 	all = ""
 }
@@ -90,7 +90,7 @@ export class FileUploadComponent {
 			};
 		});
 	}
-
+	// TO DO fix the validation
 	private isImage(mimeType: string): boolean {
 		if (!this.uploadFileMimeTypes.length) return true;
 		return mimeType.match(this.uploadFileMimeTypes) !== null;

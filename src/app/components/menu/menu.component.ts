@@ -1,5 +1,5 @@
 import { NgClass } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from "@angular/core";
 import { IMenuGroup } from "../../models/menu-group.model";
 
 @Component({
@@ -8,13 +8,22 @@ import { IMenuGroup } from "../../models/menu-group.model";
 	imports: [NgClass],
 	templateUrl: "./menu.component.html"
 })
-export class MenuComponent {
+export class MenuComponent implements OnChanges {
 	@Input() menuGroups: IMenuGroup[] = [];
+	@Input() reInitMenu = false;
+	@Input() doDisableMenu = false;
 
 	@Output() menuItemSelected = new EventEmitter<{ menuGroupTitle: string; menuItemTitle: string }>();
 
 	currentOpenGroupIdx: number | undefined = undefined;
 	savedItemIndexes: Map<number, number> = new Map();
+
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes["reInitMenu"] && !!this.reInitMenu) {
+			this.currentOpenGroupIdx = undefined;
+			this.savedItemIndexes.clear();
+		}
+	}
 
 	openMenu(groupIdx: number) {
 		this.currentOpenGroupIdx = groupIdx;

@@ -13,36 +13,44 @@ import {
 } from "../../services/menu.service";
 import { PhotonEffects, PhotonFilters, PhotonTransform } from "../../services/photon.service";
 import { IMenuGroup } from "../../models/menu-group.model";
+import { ActionMenuComponent } from "../../components/action-menu/action-menu.component";
 
 @Component({
 	selector: "app-main",
 	standalone: true,
 	templateUrl: "./main.component.html",
-	imports: [FileUploadComponent, MenuComponent, DrawImageComponent]
+	imports: [FileUploadComponent, MenuComponent, DrawImageComponent, ActionMenuComponent]
 })
 export class MainComponent implements OnInit {
 	uploadedFile?: File;
+
 	selectedFilter: PhotonFilters = PhotonFilters.None;
 	selectedEffect: PhotonEffects = PhotonEffects.None;
 	selectedTransform: PhotonTransform = PhotonTransform.None;
 
+	hoveredActionMenuItem = "";
+
+	isImageProcessing = false;
 	menuGroups: IMenuGroup[] = [];
 	menuItemActions: MenuItemAction = {};
 
 	constructor(private menuService: MenuService) {
 		this.menuGroups = menuService.getMockupMenuGroups();
 	}
+
 	ngOnInit(): void {
 		this.initMenuItemActions();
 	}
 
-	onFileUploaded(uploadedFiles: IUploadedFile) {
+	onImageFileUploaded(uploadedFiles: IUploadedFile) {
 		this.uploadedFile = uploadedFiles.file;
 	}
 
 	removeImage() {
 		this.uploadedFile = undefined;
 		this.selectedFilter = PhotonFilters.None;
+		this.selectedEffect = PhotonEffects.None;
+		this.selectedTransform = PhotonTransform.None;
 	}
 
 	menuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
@@ -51,6 +59,10 @@ export class MainComponent implements OnInit {
 			menuItemTitle as AvailableFiltersMenuItemTitles
 		);
 		this.menuService.invokeMenuItemFunction(combineMenuItem, this.menuItemActions);
+	}
+
+	imageProcessingStatusChange(isProcessing: boolean) {
+		setTimeout(() => (this.isImageProcessing = isProcessing), 0);
 	}
 
 	initMenuItemActions() {
@@ -74,13 +86,11 @@ export class MainComponent implements OnInit {
 		this.menuItemActions[combineMenuItem(amgt.Effects, aemi.None)] = () => (this.selectedEffect = PhotonEffects.None);
 		this.menuItemActions[combineMenuItem(amgt.Effects, aemi.Offset_Red)] = () => (this.selectedEffect = PhotonEffects.Offset_Red);
 		this.menuItemActions[combineMenuItem(amgt.Effects, aemi.Oil_Painting)] = () => (this.selectedEffect = PhotonEffects.Oil_Painting);
-
 		this.menuItemActions[combineMenuItem(amgt.Effects, aemi.Ryo)] = () => (this.selectedEffect = PhotonEffects.Ryo);
 		this.menuItemActions[combineMenuItem(amgt.Effects, aemi.Solarize)] = () => (this.selectedEffect = PhotonEffects.Solarize);
 
 		this.menuItemActions[combineMenuItem(amgt.Transform, atmi.None)] = () => (this.selectedTransform = PhotonTransform.None);
-		this.menuItemActions[combineMenuItem(amgt.Transform, atmi.Flip_Horizontal)] = () =>
-			(this.selectedTransform = PhotonTransform.Flip_Horizontal);
+		this.menuItemActions[combineMenuItem(amgt.Transform, atmi.Flip_Horizontal)] = () => (this.selectedTransform = PhotonTransform.Flip_Horizontal);
 		this.menuItemActions[combineMenuItem(amgt.Transform, atmi.Flip_Vertical)] = () => (this.selectedTransform = PhotonTransform.Flip_Vertical);
 	}
 }

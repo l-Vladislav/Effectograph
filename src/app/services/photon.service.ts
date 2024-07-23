@@ -51,8 +51,8 @@ export class PhotonService {
 		const photonImage = open_image(canvas, ctx);
 
 		this.applyFilter(photonImage, imageModification.filter);
-		this.applyEffect(photonImage, imageModification.effect);
 		this.applyTransform(photonImage, imageModification.transform);
+		this.applyEffect(photonImage, imageModification.effect);
 
 		putImageData(canvas, ctx, photonImage);
 	}

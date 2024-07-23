@@ -11,9 +11,7 @@
 <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 	 
 	<!-- Left Part -->
-	<div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-		
-	</div>
+	<div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
 
 	<!-- Center Part - Image Upload Component -->
 	<main role="main" class="lg:w-9/12 w-full flex-grow pt-1 px-3">
@@ -24,29 +22,37 @@
 				<div class="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3 ">
 					<div class="flex items-center justify-center w-full">
 						@if (!uploadedFile) {
-							<app-file-upload (uploadedFiles)="onFileUploaded($event)"></app-file-upload>
+							<app-file-upload (uploadedFiles)="onImageFileUploaded($event)"></app-file-upload>
 						} @else {
-							<div>
-								<app-draw-image [imageFile]="uploadedFile" 
+							<div [hidden]="isImageProcessing">
+								<app-draw-image
+									[imageFile]="uploadedFile" 
 									[filterName]="selectedFilter"
 									[effectName]="selectedEffect"
 									[transformName]="selectedTransform"
-									[customClasses]="'max-h-96 object-contain rounded-lg'">
+									[customClasses]="'max-h-96 object-contain rounded-lg'"
+									(isProcessing)="imageProcessingStatusChange($event)">
 								</app-draw-image>
-								<button (click)="removeImage()" class="text-white rounded-full focus:outline-none pt-1">
-									<span class="material-icons text-gray-500">cancel</span>
-								</button>
+								<div class="mt-2">
+									<span class="text-gray-600 h-5 block">{{hoveredActionMenuItem}}</span>
+									<div class="max-h-96 mt-2">
+										<app-action-menu (menuItemHovered)="hoveredActionMenuItem = $event"></app-action-menu>
+									</div>
+								</div>
 							</div>
+							<span [hidden]="!isImageProcessing" class="material-icons text-center text-6xl p-8 animate-spin">autorenew</span>	
 						}
 					</div>
 				</div>
 			</div> 
+			
 		</div>
+		
 	</main>
-	<!-- Right Part - Image Filter Component -->
+	<!-- Image Filter Component -->
 	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-		<div class="items-start justify-center bg-white lg:pt-32 sm:pt-5 pr-5">
-			<app-menu [menuGroups]="menuGroups" (menuItemSelected)="menuItemSelected($event.menuGroupTitle, $event.menuItemTitle)"></app-menu>
+		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white lg:pt-32 sm:pt-5 pr-5">
+			<app-menu [reInitMenu]="!uploadedFile" [doDisableMenu]="isImageProcessing || !uploadedFile" [menuGroups]="menuGroups" (menuItemSelected)="menuItemSelected($event.menuGroupTitle, $event.menuItemTitle)"></app-menu>
 		</div>
 	</div>
 

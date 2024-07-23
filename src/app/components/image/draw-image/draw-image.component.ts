@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from "@angular/core";
 import { PhotonEffects, PhotonFilters, PhotonService, PhotonTransform } from "../../../services/photon.service";
 import { NgClass } from "@angular/common";
 
@@ -17,44 +17,33 @@ export class DrawImageComponent implements OnChanges {
 	@Input() transformName: string = "";
 	@Input() customClasses: string = "";
 
-	isDrawing = false;
+	@Output() isProcessing = new EventEmitter<boolean>();
+
 	constructor(private photonService: PhotonService) {}
 
-	ngOnChanges(changes: SimpleChanges) {
+	ngOnChanges() {
 		this.drawImage();
-		console.log(changes);
-		// if (changes["imageFile"] && this.imageFile) {
-		// 	this.drawImage();
-		// }
-		// if (changes["filterName"] && this.filterName) {
-		// 	this.drawImage();
-		// }
-		// if (changes["effectName"] && this.effectName) {
-		// 	this.drawImage();
-		// }
 	}
 
-	private drawImage() {
+	private async drawImage() {
 		if (!this.canvas || !this.imageFile) return;
 
 		const ctx = this.canvas.nativeElement.getContext("2d");
-		this.isDrawing = true;
-		setTimeout(
-			async () =>
-				this.createImageElement(this.imageFile!).then(imgEl => {
-					this.canvas!.nativeElement.width = imgEl.width;
-					this.canvas!.nativeElement.height = imgEl.height;
+		this.isProcessing.emit(true);
 
-					ctx?.drawImage(imgEl, 0, 0);
-					this.photonService.applyImageModification(this.canvas!.nativeElement, {
-						effect: this.effectName as PhotonEffects,
-						filter: this.filterName as PhotonFilters,
-						transform: this.transformName as PhotonTransform
-					});
-					this.isDrawing = false;
-				}),
-			300
-		);
+		setTimeout(async () => {
+			const imageElement = await this.createImageElement(this.imageFile!);
+			this.canvas!.nativeElement.width = imageElement.width;
+			this.canvas!.nativeElement.height = imageElement.height;
+
+			ctx?.drawImage(imageElement, 0, 0);
+			this.photonService.applyImageModification(this.canvas!.nativeElement, {
+				effect: this.effectName as PhotonEffects,
+				filter: this.filterName as PhotonFilters,
+				transform: this.transformName as PhotonTransform
+			});
+			this.isProcessing.emit(false);
+		}, 200);
 	}
 
 	private createImageElement(file: File): Promise<HTMLImageElement> {

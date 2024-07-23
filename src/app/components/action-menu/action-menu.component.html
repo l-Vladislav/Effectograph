@@ -1,0 +1,14 @@
+
+<div class="bg-gray-100 rounded-full flex">
+	@for (item of menuItems; track item) {
+		<button (click)="item.action()"
+				(mouseleave)="menuItemHover('')" 
+				(mouseenter)="menuItemHover(item.title)" 
+				class="text-white rounded-full focus:outline-none pt-1 grow w-1 hover:bg-gray-400">
+				<span class="material-icons text-gray-500">
+					{{item.materialIcon}}
+				</span>
+		</button>
+	}					
+</div>
+
