@@ -29,6 +29,7 @@ export class MainComponent implements OnInit {
 	selectedTransform: PhotonTransform = PhotonTransform.None;
 
 	hoveredActionMenuItem = "";
+	imageHeight = 0;
 
 	isImageProcessing = false;
 	menuGroups: IMenuGroup[] = [];

@@ -1,11 +1,15 @@
 
-<div class="bg-gray-100 rounded-full flex">
-	@for (item of menuItems; track item) {
+<div class="bg-gray-100 rounded-full flex" [ngClass]="{'opacity-50 pointer-events-none': doDisableMenu }">
+	@for (item of menuItems; track item; let i = $index) {
 		<button (click)="item.action()"
 				(mouseleave)="menuItemHover('')" 
 				(mouseenter)="menuItemHover(item.title)" 
-				class="text-white rounded-full focus:outline-none pt-1 grow w-1 hover:bg-gray-400">
-				<span class="material-icons text-gray-500">
+				class="group text-white pt-1 grow w-1 hover:bg-gray-200"
+				[ngClass]="{
+					'rounded-l-full': i === 0,
+					'rounded-r-full': i === menuItems.length - 1
+				}">
+				<span class="material-icons text-gray-500 group-hover:text-gray-800">
 					{{item.materialIcon}}
 				</span>
 		</button>

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { NgClass } from "@angular/common";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 const actionMenuItems = [
 	{
@@ -21,10 +22,11 @@ const actionMenuItems = [
 @Component({
 	selector: "app-action-menu",
 	standalone: true,
-	imports: [],
+	imports: [NgClass],
 	templateUrl: "./action-menu.component.html"
 })
 export class ActionMenuComponent {
+	@Input() doDisableMenu = false;
 	@Output() menuItemHovered = new EventEmitter<string>();
 
 	menuItems = actionMenuItems;
