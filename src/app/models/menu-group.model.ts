@@ -5,4 +5,5 @@ export interface IMenuGroup {
 
 export interface IMenuItem {
 	title: string;
+	iconName?: string;
 }

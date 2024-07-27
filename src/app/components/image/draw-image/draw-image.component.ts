@@ -18,7 +18,7 @@ export class DrawImageComponent implements OnChanges {
 	@Input() customClasses: string = "";
 
 	@Output() isProcessing = new EventEmitter<boolean>();
-	@Output() imageData = new EventEmitter<{ height: number }>();
+	@Output() imageData = new EventEmitter<{ dataUrl: string; height: number }>();
 
 	constructor(private photonService: PhotonService) {}
 
@@ -43,8 +43,9 @@ export class DrawImageComponent implements OnChanges {
 				filter: this.filterName as PhotonFilters,
 				transform: this.transformName as PhotonTransform
 			});
+			const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
 			this.isProcessing.emit(false);
-			this.imageData.emit({ height: imageElement.width });
+			this.imageData.emit({ dataUrl: dataURL, height: imageElement.width });
 		}, 200);
 	}
 

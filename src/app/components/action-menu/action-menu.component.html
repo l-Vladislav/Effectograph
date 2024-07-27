@@ -1,18 +1,21 @@
 
 <div class="bg-gray-100 rounded-full flex" [ngClass]="{'opacity-50 pointer-events-none': doDisableMenu }">
-	@for (item of menuItems; track item; let i = $index) {
-		<button (click)="item.action()"
-				(mouseleave)="menuItemHover('')" 
-				(mouseenter)="menuItemHover(item.title)" 
-				class="group text-white pt-1 grow w-1 hover:bg-gray-200"
-				[ngClass]="{
-					'rounded-l-full': i === 0,
-					'rounded-r-full': i === menuItems.length - 1
-				}">
-				<span class="material-icons text-gray-500 group-hover:text-gray-800">
-					{{item.materialIcon}}
-				</span>
-		</button>
+	@for (actionMenuGroup of actionMenuGroups; track actionMenuGroup; let i = $index) {
+		@for (menuItem of actionMenuGroup.items; track menuItem; let i = $index) {
+			<button 
+					(click)="selectGroupItem(actionMenuGroup.title, menuItem.title)"
+					(mouseleave)="menuItemHover('')" 
+					(mouseenter)="menuItemHover(menuItem.title)" 
+					class="group text-white pt-1 grow w-1 hover:bg-gray-200"
+					[ngClass]="{
+						'rounded-l-full': i === 0,
+						'rounded-r-full': i === actionMenuGroup.items.length - 1
+					}">
+					<span class="material-icons text-gray-500 group-hover:text-gray-800">
+						{{ menuItem.iconName }}
+					</span>
+			</button>
+		}
 	}					
 </div>
 
