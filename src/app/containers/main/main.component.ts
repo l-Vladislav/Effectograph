@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MenuComponent } from "../../components/menu/menu.component";
 import { FileUploadComponent } from "../../components/file-upload/file-upload.component";
 import { IUploadedFile } from "../../models/upload-file.model";
@@ -24,6 +24,8 @@ import { ActionMenuComponent } from "../../components/action-menu/action-menu.co
 	imports: [FileUploadComponent, MenuComponent, DrawImageComponent, ActionMenuComponent]
 })
 export class MainComponent implements OnInit {
+	@ViewChild(MenuComponent) private modificationMenuComponent!: MenuComponent;
+
 	uploadedFile?: File;
 	imageUrl = "";
 
@@ -55,10 +57,8 @@ export class MainComponent implements OnInit {
 	}
 
 	removeImage() {
+		this.cleanImageModifications();
 		this.uploadedFile = undefined;
-		this.selectedFilter = PhotonFilters.None;
-		this.selectedEffect = PhotonEffects.None;
-		this.selectedTransform = PhotonTransform.None;
 	}
 
 	modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
@@ -126,12 +126,14 @@ export class MainComponent implements OnInit {
 
 		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Save_Image)] = () => console.log(this.downloadImage());
 		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Clear_Image_Modifications)] = () => this.cleanImageModifications();
-		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Delete_Image)] = () => (this.uploadedFile = undefined);
+		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Delete_Image)] = () => this.removeImage();
 	}
 
 	private cleanImageModifications() {
 		this.selectedEffect = PhotonEffects.None;
 		this.selectedFilter = PhotonFilters.None;
 		this.selectedTransform = PhotonTransform.None;
+
+		this.modificationMenuComponent.resetMenu();
 	}
 }

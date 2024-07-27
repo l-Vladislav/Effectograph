@@ -64,8 +64,7 @@
 	<!-- Image Filter Component -->
 	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
 		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white lg:pt-32 sm:pt-5 pr-5">
-			<app-menu	[reInitMenu]="!uploadedFile" 
-						[doDisableMenu]="isImageProcessing || !uploadedFile"
+			<app-menu	[doDisableMenu]="isImageProcessing || !uploadedFile"
 						[menuGroups]="menuGroups" 
 						(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
 			</app-menu>
