@@ -11,15 +11,15 @@
 <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 	 
 	<!-- Left Part -->
-	<div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
+	<div class="h-full w-full flex-shrink flex-grow-0 px-4"></div>
 
 	<!-- Center Part - Image Upload Component -->
 	<main role="main" class="lg:w-9/12 w-full flex-grow pt-1 px-3">
-		<div class="items-start justify-center bg-white lg:pt-32 sm:pt-5">
-			<div class="text-center px-4 sm:px-6 lg:px-8">
+		<div class="items-start justify-center bg-white">
+			<div class="text-center px-4 sm:px-6 lg:px-8 lg:pt-32 sm:pt-5">
 				<h1 class="block text-2xl font-bold sm:text-4xl">Effectograph</h1>
 				<p class="mt-3 text-lg text-gray-300 dark:text-neutral-500">Simple Image Effects Made Easy</p>
-				<div class="mt-5 flex flex-col gap-2 sm:flex-row sm:gap-3 ">
+				<div class="pt-10">
 					<div class="flex items-center justify-center w-full">
 						@if (!uploadedFile) {
 							<app-file-upload (uploadedFiles)="onImageFileUploaded($event)"></app-file-upload>
@@ -30,7 +30,7 @@
 									[filterName]="selectedFilter"
 									[effectName]="selectedEffect"
 									[transformName]="selectedTransform"
-									[customClasses]="'max-h-96 object-contain rounded-lg'"
+									[customClasses]="'max-h-96 object-contain rounded-lg w-full'"
 									(isProcessing)="imageProcessingStatusChange($event)"
 									(imageData)="imageUrl = $event.dataUrl">
 								</app-draw-image>
@@ -47,7 +47,7 @@
 				@if (uploadedFile) {
 					<div class="mt-2 flex flex-col items-center">
 						<div class="text-gray-600 h-5 block w-full">{{hoveredActionMenuItem}}</div>
-						<div class="max-h-96 mt-2 w-3/4">
+						<div class="max-h-96 mt-2 w-10/12">
 							<app-action-menu	[actionMenuGroups]="actionMenuGroups"
 												[doDisableMenu]="isImageProcessing || !uploadedFile" 
 												(menuItemHovered)="hoveredActionMenuItem = $event"
@@ -59,15 +59,16 @@
 			</div> 
 			
 		</div>
-		
 	</main>
 	<!-- Image Filter Component -->
-	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white lg:pt-32 sm:pt-5 pr-5">
-			<app-menu	[doDisableMenu]="isImageProcessing || !uploadedFile"
-						[menuGroups]="menuGroups" 
-						(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
-			</app-menu>
+	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2 lg:pt-32 sm:pt-5">
+		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white pr-5 pt-6 md:pt-20">
+			@if (uploadedFile) {
+				<app-menu	[doDisableMenu]="isImageProcessing || !uploadedFile"
+							[menuGroups]="menuGroups" 
+							(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
+				</app-menu>
+			}
 		</div>
 	</div>
 

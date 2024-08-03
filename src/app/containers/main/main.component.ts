@@ -59,6 +59,7 @@ export class MainComponent implements OnInit {
 	removeImage() {
 		this.cleanImageModifications();
 		this.uploadedFile = undefined;
+		this.hoveredActionMenuItem = "";
 	}
 
 	modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
@@ -124,9 +125,9 @@ export class MainComponent implements OnInit {
 		this.modificationMenuItemActions[combineMenuItem(amgt.Transform, atmi.Flip_Vertical)] = () =>
 			(this.selectedTransform = PhotonTransform.Flip_Vertical);
 
-		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Save_Image)] = () => console.log(this.downloadImage());
+		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Download_Image)] = () => console.log(this.downloadImage());
 		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Clear_Image_Modifications)] = () => this.cleanImageModifications();
-		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Delete_Image)] = () => this.removeImage();
+		this.actionMenuItemActions[combineMenuItem(aamig.Action, aamii.Clear_Image)] = () => this.removeImage();
 	}
 
 	private cleanImageModifications() {

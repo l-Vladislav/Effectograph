@@ -39,9 +39,9 @@ export enum AvailableTransformMenuItemTitles {
 }
 
 export enum AvailableActionMenuItemTitles {
-	Save_Image = "Save Image",
+	Download_Image = "Download Image",
 	Clear_Image_Modifications = "Clear Image Modifications",
-	Delete_Image = "Delete Image"
+	Clear_Image = "Clear Image"
 }
 
 export type MenuItemAction = {
@@ -101,11 +101,11 @@ export class MenuService {
 	private getItemGroupIcon(menuItemTitle: AvailableActionMenuItemTitles) {
 		// google material icon
 		switch (menuItemTitle) {
-			case AvailableActionMenuItemTitles.Save_Image:
-				return "save";
+			case AvailableActionMenuItemTitles.Download_Image:
+				return "download";
 			case AvailableActionMenuItemTitles.Clear_Image_Modifications:
 				return "layers_clear";
-			case AvailableActionMenuItemTitles.Delete_Image:
+			case AvailableActionMenuItemTitles.Clear_Image:
 				return "cancel";
 			default:
 				return "";
