@@ -8,7 +8,8 @@ export enum AvailableMenuGroupTitles {
 }
 
 export enum AvailableActionMenuGroupTitles {
-	Action = "Action"
+	Action = "Action",
+	Info = "Info"
 }
 
 export enum AvailableFiltersMenuItemTitles {
@@ -48,7 +49,7 @@ export type MenuItemAction = {
 	[key: string]: () => void;
 };
 
-const _mockupMenuGroups: IMenuGroup[] = [
+const _mockupSideMenuGroups: IMenuGroup[] = [
 	{
 		title: AvailableMenuGroupTitles.Filter,
 		items: Object.values(AvailableFiltersMenuItemTitles).map(title => ({ title }))
@@ -78,8 +79,8 @@ export class MenuService {
 		];
 	}
 
-	getMockupMenuGroups() {
-		return _mockupMenuGroups;
+	getMockupSideMenuGroups() {
+		return _mockupSideMenuGroups;
 	}
 
 	getMockupActionMenuGroups() {

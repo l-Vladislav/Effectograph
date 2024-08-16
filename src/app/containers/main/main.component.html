@@ -1,4 +1,4 @@
-
+<!-- 
 <header>
 	<div class="bg-black text-white cursor-pointer w-full h-10 text-center">
 		<div class="flex items-center justify-center pt-2">
@@ -6,7 +6,7 @@
 			<span class="material-icons animate-bounce">keyboard_double_arrow_up</span>
 		</div>
 	</div>
-</header>
+</header> -->
 
 <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 	 
@@ -32,7 +32,7 @@
 									[transformName]="selectedTransform"
 									[customClasses]="'max-h-96 object-contain rounded-lg w-full'"
 									(isProcessing)="imageProcessingStatusChange($event)"
-									(imageData)="imageUrl = $event.dataUrl">
+									(processedImageMetadata)="processedImageUrl = $event.dataUrl;">
 								</app-draw-image>
 								
 							</div>
@@ -48,8 +48,8 @@
 					<div class="mt-2 flex flex-col items-center">
 						<div class="text-gray-600 h-5 block w-full">{{hoveredActionMenuItem}}</div>
 						<div class="max-h-96 mt-2 w-10/12">
-							<app-action-menu	[actionMenuGroups]="actionMenuGroups"
-												[doDisableMenu]="isImageProcessing || !uploadedFile" 
+							<app-action-menu	[disabled]="isImageProcessing || !uploadedFile"
+												[actionMenuGroups]="actionMenuGroups"
 												(menuItemHovered)="hoveredActionMenuItem = $event"
 												(menuItemSelected)="actionMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)">
 							</app-action-menu>
@@ -64,10 +64,10 @@
 	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2 lg:pt-32 sm:pt-5">
 		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white pr-5 pt-6 md:pt-20">
 			@if (uploadedFile) {
-				<app-menu	[doDisableMenu]="isImageProcessing || !uploadedFile"
-							[menuGroups]="menuGroups" 
-							(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
-				</app-menu>
+				<app-side-menu	[disabled]="isImageProcessing || !uploadedFile"
+								[sideMenuGroups]="sideMenuGroups" 
+								(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
+				</app-side-menu>
 			}
 		</div>
 	</div>

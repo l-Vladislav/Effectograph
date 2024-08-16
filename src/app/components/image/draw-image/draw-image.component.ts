@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, input, OnChanges, output, ViewChild } from "@angular/core";
 import { PhotonEffects, PhotonFilters, PhotonService, PhotonTransform } from "../../../services/photon.service";
 import { NgClass } from "@angular/common";
 
@@ -11,14 +11,16 @@ import { NgClass } from "@angular/common";
 export class DrawImageComponent implements OnChanges {
 	@ViewChild("imageCanvas", { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
 
-	@Input() imageFile?: File;
-	@Input() filterName: string = "";
-	@Input() effectName: string = "";
-	@Input() transformName: string = "";
-	@Input() customClasses: string = "";
+	imageFile = input<File>();
+	customClasses = input<string>("");
 
-	@Output() isProcessing = new EventEmitter<boolean>();
-	@Output() imageData = new EventEmitter<{ dataUrl: string; height: number }>();
+	// TODO: move to imageModificationClass //
+	filterName = input<PhotonFilters>(PhotonFilters.None);
+	effectName = input<PhotonEffects>(PhotonEffects.None);
+	transformName = input<PhotonTransform>(PhotonTransform.None);
+
+	isProcessing = output<boolean>();
+	processedImageMetadata = output<{ dataUrl: string; height: number }>();
 
 	constructor(private photonService: PhotonService) {}
 
@@ -33,19 +35,22 @@ export class DrawImageComponent implements OnChanges {
 		this.isProcessing.emit(true);
 
 		setTimeout(async () => {
-			const imageElement = await this.createImageElement(this.imageFile!);
+			const imageElement = await this.createImageElement(this.imageFile()!);
 			this.canvas!.nativeElement.width = imageElement.width;
 			this.canvas!.nativeElement.height = imageElement.height;
 
 			ctx?.drawImage(imageElement, 0, 0);
+
 			this.photonService.applyImageModification(this.canvas!.nativeElement, {
-				effect: this.effectName as PhotonEffects,
-				filter: this.filterName as PhotonFilters,
-				transform: this.transformName as PhotonTransform
+				filter: this.filterName(),
+				effect: this.effectName(),
+				transform: this.transformName()
 			});
+
 			const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
+
 			this.isProcessing.emit(false);
-			this.imageData.emit({ dataUrl: dataURL, height: imageElement.width });
+			this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
 		}, 200);
 	}
 

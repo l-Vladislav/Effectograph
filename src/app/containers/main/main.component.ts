@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { MenuComponent } from "../../components/menu/menu.component";
+import { SideMenuComponent } from "../../components/menu/side-menu/side-menu.component";
 import { FileUploadComponent } from "../../components/file-upload/file-upload.component";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { DrawImageComponent } from "../../components/image/draw-image/draw-image.component";
@@ -15,19 +15,19 @@ import {
 } from "../../services/menu.service";
 import { PhotonEffects, PhotonFilters, PhotonTransform } from "../../services/photon.service";
 import { IMenuGroup } from "../../models/menu-group.model";
-import { ActionMenuComponent } from "../../components/action-menu/action-menu.component";
+import { ActionMenuComponent } from "../../components/menu/action-menu/action-menu.component";
 
 @Component({
 	selector: "app-main",
 	standalone: true,
 	templateUrl: "./main.component.html",
-	imports: [FileUploadComponent, MenuComponent, DrawImageComponent, ActionMenuComponent]
+	imports: [FileUploadComponent, SideMenuComponent, DrawImageComponent, ActionMenuComponent]
 })
 export class MainComponent implements OnInit {
-	@ViewChild(MenuComponent) private modificationMenuComponent!: MenuComponent;
+	@ViewChild(SideMenuComponent) private modificationMenuComponent!: SideMenuComponent;
 
 	uploadedFile?: File;
-	imageUrl = "";
+	processedImageUrl = "";
 
 	selectedFilter: PhotonFilters = PhotonFilters.None;
 	selectedEffect: PhotonEffects = PhotonEffects.None;
@@ -37,14 +37,14 @@ export class MainComponent implements OnInit {
 
 	isImageProcessing = false;
 
-	menuGroups: IMenuGroup[] = [];
+	sideMenuGroups: IMenuGroup[] = [];
 	actionMenuGroups: IMenuGroup[] = [];
 
 	modificationMenuItemActions: MenuItemAction = {};
 	actionMenuItemActions: MenuItemAction = {};
 
 	constructor(private menuService: MenuService) {
-		this.menuGroups = menuService.getMockupMenuGroups();
+		this.sideMenuGroups = menuService.getMockupSideMenuGroups();
 		this.actionMenuGroups = menuService.getMockupActionMenuGroups();
 	}
 
@@ -85,8 +85,8 @@ export class MainComponent implements OnInit {
 	downloadImage() {
 		const link = document.createElement("a");
 
-		link.href = this.imageUrl;
-		link.download = "test42";
+		link.href = this.processedImageUrl;
+		link.download = "modified_" + this.uploadedFile?.name;
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
