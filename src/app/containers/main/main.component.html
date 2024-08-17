@@ -26,10 +26,8 @@
 						} @else {
 							<div [hidden]="isImageProcessing">
 								<app-draw-image
-									[imageFile]="uploadedFile" 
-									[filterName]="selectedFilter"
-									[effectName]="selectedEffect"
-									[transformName]="selectedTransform"
+									[imageFile]="uploadedFile"
+									[imageModification$]="imageModification$"
 									[customClasses]="'max-h-96 object-contain rounded-lg w-full'"
 									(isProcessing)="imageProcessingStatusChange($event)"
 									(processedImageMetadata)="processedImageUrl = $event.dataUrl;">

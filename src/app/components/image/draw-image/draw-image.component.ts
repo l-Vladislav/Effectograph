@@ -1,34 +1,46 @@
-import { Component, ElementRef, input, OnChanges, output, ViewChild } from "@angular/core";
-import { PhotonEffects, PhotonFilters, PhotonService, PhotonTransform } from "../../../services/photon.service";
-import { NgClass } from "@angular/common";
+import { Component, ElementRef, input, output, ViewChild, OnInit, OnDestroy } from "@angular/core";
+import { IImageModification, PhotonService } from "../../../services/photon.service";
+import { AsyncPipe, JsonPipe, NgClass } from "@angular/common";
+import { BehaviorSubject, distinctUntilChanged, Subscription } from "rxjs";
 
 @Component({
 	selector: "app-draw-image",
 	standalone: true,
 	templateUrl: "./draw-image.component.html",
-	imports: [NgClass]
+	imports: [NgClass, AsyncPipe, JsonPipe]
 })
-export class DrawImageComponent implements OnChanges {
+export class DrawImageComponent implements OnInit, OnDestroy {
 	@ViewChild("imageCanvas", { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
+	imageModification$ = input.required<BehaviorSubject<IImageModification>>();
 
 	imageFile = input<File>();
 	customClasses = input<string>("");
 
-	// TODO: move to imageModificationClass //
-	filterName = input<PhotonFilters>(PhotonFilters.None);
-	effectName = input<PhotonEffects>(PhotonEffects.None);
-	transformName = input<PhotonTransform>(PhotonTransform.None);
-
 	isProcessing = output<boolean>();
 	processedImageMetadata = output<{ dataUrl: string; height: number }>();
 
-	constructor(private photonService: PhotonService) {}
+	private subscription: Subscription = new Subscription();
 
-	ngOnChanges() {
-		this.drawImage();
+	constructor(public photonService: PhotonService) {}
+
+	ngOnInit() {
+		this.subscription.add(
+			this.imageModification$()
+				.pipe(
+					distinctUntilChanged(
+						(prev: IImageModification, curr: IImageModification) =>
+							prev.effect === curr.effect && prev.filter === curr.filter && prev.transform === curr.transform
+					)
+				)
+				.subscribe(val => this.drawImage(val))
+		);
 	}
 
-	private async drawImage() {
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe();
+	}
+
+	private async drawImage(imageModifications: IImageModification) {
 		if (!this.canvas || !this.imageFile) return;
 
 		const ctx = this.canvas.nativeElement.getContext("2d");
@@ -41,11 +53,7 @@ export class DrawImageComponent implements OnChanges {
 
 			ctx?.drawImage(imageElement, 0, 0);
 
-			this.photonService.applyImageModification(this.canvas!.nativeElement, {
-				filter: this.filterName(),
-				effect: this.effectName(),
-				transform: this.transformName()
-			});
+			this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
 
 			const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
 

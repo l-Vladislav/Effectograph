@@ -7,3 +7,8 @@ export interface IMenuItem {
 	title: string;
 	iconName?: string;
 }
+
+export interface IMenuSelectedItem {
+	menuGroupTitle: string;
+	menuItemTitle: string;
+}

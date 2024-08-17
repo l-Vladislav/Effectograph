@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { IMenuGroup } from "../models/menu-group.model";
 
-export enum AvailableMenuGroupTitles {
+export enum AvailableSideMenuGroupTitles {
 	Filter = "Filters",
 	Effects = "Effects",
 	Transform = "Transform"
@@ -51,15 +51,15 @@ export type MenuItemAction = {
 
 const _mockupSideMenuGroups: IMenuGroup[] = [
 	{
-		title: AvailableMenuGroupTitles.Filter,
+		title: AvailableSideMenuGroupTitles.Filter,
 		items: Object.values(AvailableFiltersMenuItemTitles).map(title => ({ title }))
 	},
 	{
-		title: AvailableMenuGroupTitles.Effects,
+		title: AvailableSideMenuGroupTitles.Effects,
 		items: Object.values(AvailableEffectsMenuItemTitles).map(title => ({ title }))
 	},
 	{
-		title: AvailableMenuGroupTitles.Transform,
+		title: AvailableSideMenuGroupTitles.Transform,
 		items: Object.values(AvailableTransformMenuItemTitles).map(title => ({ title }))
 	}
 ];
@@ -93,7 +93,7 @@ export class MenuService {
 	}
 
 	combineMenuItem(
-		menuGroupTitle: AvailableMenuGroupTitles | AvailableActionMenuGroupTitles,
+		menuGroupTitle: AvailableSideMenuGroupTitles | AvailableActionMenuGroupTitles,
 		menuItemTitle: AvailableFiltersMenuItemTitles | AvailableEffectsMenuItemTitles | AvailableTransformMenuItemTitles | AvailableActionMenuItemTitles
 	): string {
 		return menuGroupTitle + "|" + menuItemTitle;

@@ -27,24 +27,24 @@ export class FileUploadComponent {
 
 	@Output() uploadedFiles = new EventEmitter<IUploadedFile>();
 
-	onDragOver(event: DragEvent) {
+	protected onDragOver(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 	}
 
-	onDrop(event: DragEvent) {
+	protected onDrop(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 
 		this.uploadFile(event.dataTransfer?.files ?? null);
 	}
 
-	onDragLeave(event: DragEvent) {
+	protected onDragLeave(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 	}
 
-	onFileSelected(event: Event) {
+	protected onFileSelected(event: Event) {
 		const input = event.target as HTMLInputElement;
 		this.uploadFile(input.files);
 	}

@@ -1,6 +1,6 @@
 import { NgClass } from "@angular/common";
 import { Component, input, output } from "@angular/core";
-import { IMenuGroup } from "../../../models/menu-group.model";
+import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu-group.model";
 
 @Component({
 	selector: "app-action-menu",
@@ -15,5 +15,5 @@ export class ActionMenuComponent {
 	});
 
 	menuItemHovered = output<string>();
-	menuItemSelected = output<{ menuGroupTitle: string; menuItemTitle: string }>();
+	menuItemSelected = output<IMenuSelectedItem>();
 }

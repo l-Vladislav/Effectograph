@@ -1,6 +1,6 @@
 import { NgClass } from "@angular/common";
 import { Component, input, OnInit, output } from "@angular/core";
-import { IMenuGroup } from "../../../models/menu-group.model";
+import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu-group.model";
 
 @Component({
 	selector: "app-side-menu",
@@ -14,7 +14,8 @@ export class SideMenuComponent implements OnInit {
 	disabled = input(false, {
 		transform: (value: boolean | string) => (typeof value === "string" ? value === "" : value)
 	});
-	menuItemSelected = output<{ menuGroupTitle: string; menuItemTitle: string }>();
+
+	menuItemSelected = output<IMenuSelectedItem>();
 
 	currentOpenGroupIdx: number | undefined = undefined;
 	selectedGroupItemIndexes: Map<number, number> = new Map();
@@ -34,16 +35,16 @@ export class SideMenuComponent implements OnInit {
 		this.currentOpenGroupIdx = undefined;
 	}
 
-	openMenu(groupIdx: number) {
+	protected openMenu(groupIdx: number) {
 		this.currentOpenGroupIdx = groupIdx;
 	}
 
-	selectGroupItem(menuGroupTitle: string, menuItemTitle: string, groupIdx: number, itemIdx: number) {
+	protected selectGroupItem(menuGroupTitle: string, menuItemTitle: string, groupIdx: number, itemIdx: number) {
 		this.selectedGroupItemIndexes.set(groupIdx, itemIdx);
 		this.menuItemSelected.emit({ menuGroupTitle, menuItemTitle });
 	}
 
-	isCurrentItemActive(groupIdx: number, itemIdx: number) {
+	protected isCurrentItemActive(groupIdx: number, itemIdx: number) {
 		return this.selectedGroupItemIndexes.get(groupIdx) === itemIdx ? true : false;
 	}
 }
