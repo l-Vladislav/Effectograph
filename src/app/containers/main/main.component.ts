@@ -27,7 +27,7 @@ import { BehaviorSubject } from "rxjs";
 export class MainComponent implements OnInit {
 	@ViewChild(SideMenuComponent) private modificationMenuComponent!: SideMenuComponent;
 
-	uploadedFile?: File;
+	uploadedFile: IUploadedFile | undefined = undefined;
 	processedImageUrl = "";
 
 	imageModification$ = new BehaviorSubject<IImageModification>({
@@ -55,8 +55,8 @@ export class MainComponent implements OnInit {
 		this.initMenuItemActions();
 	}
 
-	protected onImageFileUploaded(uploadedFiles: IUploadedFile) {
-		this.uploadedFile = uploadedFiles.file;
+	protected onImageFileUploaded(uploadedFile: IUploadedFile) {
+		this.uploadedFile = uploadedFile;
 	}
 
 	protected modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
@@ -154,9 +154,9 @@ export class MainComponent implements OnInit {
 	}
 
 	private removeImage() {
-		this.cleanImageModifications();
 		this.uploadedFile = undefined;
 		this.hoveredActionMenuItem = "";
+		this.cleanImageModifications();
 	}
 
 	private cleanImageModifications() {
@@ -168,7 +168,7 @@ export class MainComponent implements OnInit {
 		const link = document.createElement("a");
 
 		link.href = this.processedImageUrl;
-		link.download = "modified_" + this.uploadedFile?.name;
+		link.download = "modified_" + this.uploadedFile!.file!.name;
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);

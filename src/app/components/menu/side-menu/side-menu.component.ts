@@ -10,7 +10,8 @@ import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu-group.model"
 })
 export class SideMenuComponent implements OnInit {
 	sideMenuGroups = input.required<IMenuGroup[]>();
-	selectFirstElementByDefault = input<boolean>(true);
+	selectFirstElementByDefault = input(true);
+
 	disabled = input(false, {
 		transform: (value: boolean | string) => (typeof value === "string" ? value === "" : value)
 	});

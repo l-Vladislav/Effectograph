@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, output, ViewChild, OnInit, OnDestroy } from "@angular/core";
+import { Component, ElementRef, input, output, ViewChild, OnInit, OnDestroy, model } from "@angular/core";
 import { IImageModification, PhotonService } from "../../../services/photon.service";
 import { AsyncPipe, JsonPipe, NgClass } from "@angular/common";
 import { BehaviorSubject, distinctUntilChanged, Subscription } from "rxjs";
@@ -11,10 +11,10 @@ import { BehaviorSubject, distinctUntilChanged, Subscription } from "rxjs";
 })
 export class DrawImageComponent implements OnInit, OnDestroy {
 	@ViewChild("imageCanvas", { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
-	imageModification$ = input.required<BehaviorSubject<IImageModification>>();
 
-	imageFile = input<File>();
-	customClasses = input<string>("");
+	imageModification$ = input.required<BehaviorSubject<IImageModification>>();
+	imageFile = model<File>();
+	customClasses = input("");
 
 	isProcessing = output<boolean>();
 	processedImageMetadata = output<{ dataUrl: string; height: number }>();
@@ -32,21 +32,24 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 							prev.effect === curr.effect && prev.filter === curr.filter && prev.transform === curr.transform
 					)
 				)
-				.subscribe(val => this.drawImage(val))
+				.subscribe(imageModification => this.drawImage(imageModification))
 		);
 	}
 
 	ngOnDestroy(): void {
+		this.imageFile.update(() => undefined);
 		this.subscription.unsubscribe();
 	}
 
 	private async drawImage(imageModifications: IImageModification) {
-		if (!this.canvas || !this.imageFile) return;
+		if (!this.canvas) return;
 
 		const ctx = this.canvas.nativeElement.getContext("2d");
 		this.isProcessing.emit(true);
 
 		setTimeout(async () => {
+			if (!this.imageFile()) return;
+
 			const imageElement = await this.createImageElement(this.imageFile()!);
 			this.canvas!.nativeElement.width = imageElement.width;
 			this.canvas!.nativeElement.height = imageElement.height;
@@ -56,7 +59,6 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 			this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
 
 			const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
-
 			this.isProcessing.emit(false);
 			this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
 		}, 200);

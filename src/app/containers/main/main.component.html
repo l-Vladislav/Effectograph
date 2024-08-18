@@ -21,12 +21,12 @@
 				<p class="mt-3 text-lg text-gray-300 dark:text-neutral-500">Simple Image Effects Made Easy</p>
 				<div class="pt-10">
 					<div class="flex items-center justify-center w-full">
-						@if (!uploadedFile) {
+						@if (!uploadedFile || !uploadedFile!.file) {
 							<app-file-upload (uploadedFiles)="onImageFileUploaded($event)"></app-file-upload>
 						} @else {
 							<div [hidden]="isImageProcessing">
 								<app-draw-image
-									[imageFile]="uploadedFile"
+									[imageFile]="uploadedFile.file"
 									[imageModification$]="imageModification$"
 									[customClasses]="'max-h-96 object-contain rounded-lg w-full'"
 									(isProcessing)="imageProcessingStatusChange($event)"
@@ -41,8 +41,11 @@
 							}
 						}
 					</div>
+					@if (uploadedFile?.errorMessage) {
+						<p class="text-sm mt-5 text-red-500">{{uploadedFile?.errorMessage}}</p>
+					}
 				</div>
-				@if (uploadedFile) {
+				@if (uploadedFile?.file) {
 					<div class="mt-2 flex flex-col items-center">
 						<div class="text-gray-600 h-5 block w-full">{{hoveredActionMenuItem}}</div>
 						<div class="max-h-96 mt-2 w-10/12">
@@ -61,7 +64,7 @@
 	<!-- Image Filter Component -->
 	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2 lg:pt-32 sm:pt-5">
 		<div [hidden]="!uploadedFile" class="items-start justify-center bg-white pr-5 pt-6 md:pt-20">
-			@if (uploadedFile) {
+			@if (uploadedFile?.file) {
 				<app-side-menu	[disabled]="isImageProcessing || !uploadedFile"
 								[sideMenuGroups]="sideMenuGroups" 
 								(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >

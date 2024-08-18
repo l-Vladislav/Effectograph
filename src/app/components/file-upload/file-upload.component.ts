@@ -1,20 +1,21 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { catchError, concatMap, from, Observable, Observer, of, take } from "rxjs";
 
+// can be extended if you want to implement a different logic of this component
 enum uploadFileMimeTypes {
-	img = "image/(png|jpeg)",
-	all = ""
+	//all = "",
+	img = "image/(png|jpeg)"
 }
 
 enum uploadErrorMessages {
 	invalidFile = "Invalid file",
 	invalidFileFormat = "Invalid file format",
-	invalidImage = "Invalid image",
-	invalidFileSize = "Invalid file size"
+	invalidFileSize = "Invalid file size",
+	invalidImage = "Invalid image"
 }
 
-const MAX_IMAGE_SIZE_KB = 5140;
+const MAX_IMAGE_SIZE_KB = 5140; //5mb // 5140kb
 
 @Component({
 	selector: "app-file-upload",
@@ -22,10 +23,10 @@ const MAX_IMAGE_SIZE_KB = 5140;
 	templateUrl: "./file-upload.component.html"
 })
 export class FileUploadComponent {
-	@Input() uploadFileMimeTypes = uploadFileMimeTypes.all;
-	@Input() maximumFilesToUpload = 1;
+	maximumFilesToUpload = input(1);
+	uploadFileMimeTypes = input(uploadFileMimeTypes.img);
 
-	@Output() uploadedFiles = new EventEmitter<IUploadedFile>();
+	uploadedFiles = output<IUploadedFile>();
 
 	protected onDragOver(event: DragEvent) {
 		event.preventDefault();
@@ -54,7 +55,7 @@ export class FileUploadComponent {
 		from(files)
 			.pipe(
 				concatMap((file: File) => this.validateFile(file).pipe(catchError((error: IUploadedFile) => of(error)))),
-				take(this.maximumFilesToUpload)
+				take(this.maximumFilesToUpload())
 			)
 			.subscribe((validatedFile: IUploadedFile) => {
 				this.uploadedFiles.emit(validatedFile);
@@ -70,8 +71,7 @@ export class FileUploadComponent {
 			}
 			fileReader.readAsDataURL(file);
 			fileReader.onload = () => {
-				const { type } = file;
-				if (this.isImage(type)) {
+				if (this.isImage(file.type)) {
 					const image = new Image();
 					image.onload = () => {
 						observer.next({ file });
@@ -85,14 +85,15 @@ export class FileUploadComponent {
 					observer.error({ errorMessage: uploadErrorMessages.invalidFileFormat });
 				}
 			};
+
 			fileReader.onerror = () => {
 				observer.error({ errorMessage: uploadErrorMessages.invalidFile });
 			};
 		});
 	}
-	// TO DO fix the validation
+
 	private isImage(mimeType: string): boolean {
-		if (!this.uploadFileMimeTypes.length) return true;
-		return mimeType.match(this.uploadFileMimeTypes) !== null;
+		if (!this.uploadFileMimeTypes().length) return true;
+		return mimeType.match(this.uploadFileMimeTypes()) !== null;
 	}
 }
