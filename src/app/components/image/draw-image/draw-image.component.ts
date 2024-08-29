@@ -17,6 +17,7 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 	customClasses = input("");
 
 	isProcessing = output<boolean>();
+	// TO DO need to add a model
 	processedImageMetadata = output<{ dataUrl: string; height: number }>();
 
 	private subscription: Subscription = new Subscription();
@@ -45,23 +46,30 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 		if (!this.canvas) return;
 
 		const ctx = this.canvas.nativeElement.getContext("2d");
+		if (!ctx) return;
+
 		this.isProcessing.emit(true);
 
-		setTimeout(async () => {
-			if (!this.imageFile()) return;
+		try {
+			setTimeout(async () => {
+				if (!this.imageFile()) return;
 
-			const imageElement = await this.createImageElement(this.imageFile()!);
-			this.canvas!.nativeElement.width = imageElement.width;
-			this.canvas!.nativeElement.height = imageElement.height;
+				const imageElement = await this.createImageElement(this.imageFile()!);
+				this.canvas!.nativeElement.width = imageElement.width;
+				this.canvas!.nativeElement.height = imageElement.height;
 
-			ctx?.drawImage(imageElement, 0, 0);
+				ctx?.drawImage(imageElement, 0, 0);
 
-			this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
+				this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
 
-			const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
+				const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
+				this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
+				this.isProcessing.emit(false);
+			}, 200);
+		} catch (error) {
+			console.error("Error processing image:", error);
 			this.isProcessing.emit(false);
-			this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
-		}, 200);
+		}
 	}
 
 	private createImageElement(file: File): Promise<HTMLImageElement> {
@@ -69,10 +77,11 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 			const reader = new FileReader();
 			reader.onload = (e: ProgressEvent<FileReader>) => {
 				const img = new Image();
-				img.src = e.target!.result as string;
+				img.src = e.target?.result as string;
 				img.onload = () => resolve(img);
-				img.onerror = error => reject(error);
+				img.onerror = () => reject(new Error("Error loading image"));
 			};
+			reader.onerror = () => reject(new Error("Error reading file"));
 			reader.readAsDataURL(file);
 		});
 	}

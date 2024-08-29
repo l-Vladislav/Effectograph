@@ -18,7 +18,7 @@ export class SideMenuComponent implements OnInit {
 
 	menuItemSelected = output<IMenuSelectedItem>();
 
-	currentOpenGroupIdx: number | undefined = undefined;
+	currentOpenGroupIdx?: number;
 	selectedGroupItemIndexes: Map<number, number> = new Map();
 
 	ngOnInit(): void {
@@ -36,16 +36,16 @@ export class SideMenuComponent implements OnInit {
 		this.currentOpenGroupIdx = undefined;
 	}
 
-	protected openMenu(groupIdx: number) {
+	openMenu(groupIdx: number) {
 		this.currentOpenGroupIdx = groupIdx;
 	}
 
-	protected selectGroupItem(menuGroupTitle: string, menuItemTitle: string, groupIdx: number, itemIdx: number) {
+	selectGroupItem(menuGroupTitle: string, menuItemTitle: string, groupIdx: number, itemIdx: number) {
 		this.selectedGroupItemIndexes.set(groupIdx, itemIdx);
 		this.menuItemSelected.emit({ menuGroupTitle, menuItemTitle });
 	}
 
-	protected isCurrentItemActive(groupIdx: number, itemIdx: number) {
+	isCurrentItemActive(groupIdx: number, itemIdx: number) {
 		return this.selectedGroupItemIndexes.get(groupIdx) === itemIdx ? true : false;
 	}
 }

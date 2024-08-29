@@ -17,17 +17,18 @@ import { IImageModification, PhotonEffects, PhotonFilters, PhotonTransform } fro
 import { IMenuGroup } from "../../models/menu-group.model";
 import { ActionMenuComponent } from "../../components/menu/action-menu/action-menu.component";
 import { BehaviorSubject } from "rxjs";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
 	selector: "app-main",
 	standalone: true,
 	templateUrl: "./main.component.html",
-	imports: [FileUploadComponent, SideMenuComponent, DrawImageComponent, ActionMenuComponent]
+	imports: [FileUploadComponent, SideMenuComponent, DrawImageComponent, ActionMenuComponent, AsyncPipe]
 })
 export class MainComponent implements OnInit {
 	@ViewChild(SideMenuComponent) private modificationMenuComponent!: SideMenuComponent;
 
-	uploadedFile: IUploadedFile | undefined = undefined;
+	uploadedFileInfo?: IUploadedFile;
 	processedImageUrl = "";
 
 	imageModification$ = new BehaviorSubject<IImageModification>({
@@ -36,10 +37,9 @@ export class MainComponent implements OnInit {
 		transform: PhotonTransform.None
 	});
 
-	hoveredActionMenuItem = "";
-
 	isImageProcessing = false;
 
+	hoveredActionMenuItem = "";
 	sideMenuGroups: IMenuGroup[] = [];
 	actionMenuGroups: IMenuGroup[] = [];
 
@@ -56,7 +56,7 @@ export class MainComponent implements OnInit {
 	}
 
 	protected onImageFileUploaded(uploadedFile: IUploadedFile) {
-		this.uploadedFile = uploadedFile;
+		this.uploadedFileInfo = uploadedFile;
 	}
 
 	protected modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
@@ -76,7 +76,6 @@ export class MainComponent implements OnInit {
 	}
 
 	protected imageProcessingStatusChange(isProcessing: boolean) {
-		// this timeout fixed the change detection issue
 		setTimeout(() => (this.isImageProcessing = isProcessing), 0);
 	}
 
@@ -154,7 +153,7 @@ export class MainComponent implements OnInit {
 	}
 
 	private removeImage() {
-		this.uploadedFile = undefined;
+		this.uploadedFileInfo = undefined;
 		this.hoveredActionMenuItem = "";
 		this.cleanImageModifications();
 	}
@@ -165,12 +164,15 @@ export class MainComponent implements OnInit {
 	}
 
 	private downloadImage() {
-		const link = document.createElement("a");
-
-		link.href = this.processedImageUrl;
-		link.download = "modified_" + this.uploadedFile!.file!.name;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+		if (this.uploadedFileInfo && this.processedImageUrl) {
+			const link = document.createElement("a");
+			link.href = this.processedImageUrl;
+			link.download = "modified_" + this.uploadedFileInfo.file!.name;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} else {
+			console.error("No file uploaded or image URL is missing.");
+		}
 	}
 }

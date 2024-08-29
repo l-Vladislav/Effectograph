@@ -96,7 +96,7 @@ export class MenuService {
 		menuGroupTitle: AvailableSideMenuGroupTitles | AvailableActionMenuGroupTitles,
 		menuItemTitle: AvailableFiltersMenuItemTitles | AvailableEffectsMenuItemTitles | AvailableTransformMenuItemTitles | AvailableActionMenuItemTitles
 	): string {
-		return menuGroupTitle + "|" + menuItemTitle;
+		return `${menuGroupTitle}|${menuItemTitle}`;
 	}
 
 	private getItemGroupIcon(menuItemTitle: AvailableActionMenuItemTitles) {
