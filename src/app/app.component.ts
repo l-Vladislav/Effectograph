@@ -9,7 +9,4 @@ import { RouterOutlet } from "@angular/router";
 })
 export class AppComponent {
 	title = "effectograph";
-
-	// TODO: Consider adding lifecycle hooks if needed for initialization or cleanup
-	// TODO: Add methods or properties to handle application-wide functionality if necessary
 }

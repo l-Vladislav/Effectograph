@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterOutlet } from "@angular/router";
 import { AppComponent } from "./app.component";
 
 describe("AppComponent", () => {
@@ -8,22 +7,19 @@ describe("AppComponent", () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [AppComponent],
-			imports: [RouterOutlet]
+			imports: [AppComponent]
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
 		fixture = TestBed.createComponent(AppComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
-	it("should create the app", () => {
+	it("should create", () => {
 		expect(component).toBeTruthy();
 	});
 
-	it(`should have as title 'effectograph'`, () => {
+	it("should have as title 'effectograph'", () => {
 		expect(component.title).toEqual("effectograph");
 	});
 

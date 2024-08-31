@@ -1,6 +1,7 @@
 import { Component, input, output } from "@angular/core";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { catchError, concatMap, from, Observable, Observer, of, take } from "rxjs";
+import { DecimalPipe } from "@angular/common";
 
 // can be extended if you want to implement a different logic of this component
 enum uploadFileMimeTypes {
@@ -8,66 +9,75 @@ enum uploadFileMimeTypes {
 	img = "image/(png|jpeg)"
 }
 
-enum uploadErrorMessages {
+export enum uploadErrorMessages {
 	invalidFile = "Invalid file",
 	invalidFileFormat = "Invalid file format",
 	invalidFileSize = "Invalid file size",
 	invalidImage = "Invalid image"
 }
 
-const MAX_IMAGE_SIZE_KB = 5140; //5mb // 5140kb
-
 @Component({
 	selector: "app-file-upload",
 	standalone: true,
+	imports: [DecimalPipe],
 	templateUrl: "./file-upload.component.html"
 })
 export class FileUploadComponent {
 	maximumFilesToUpload = input(1);
+	maximumFileSizeInKb = input(1024);
 	uploadFileMimeTypes = input(uploadFileMimeTypes.img);
 
 	uploadedFiles = output<IUploadedFile>();
 
-	protected onDragOver(event: DragEvent) {
+	onDragOver(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 	}
 
-	protected onDrop(event: DragEvent) {
+	onDrop(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 
 		this.uploadFile(event.dataTransfer?.files ?? null);
 	}
 
-	protected onDragLeave(event: DragEvent) {
+	onDragLeave(event: DragEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 	}
 
-	protected onFileSelected(event: Event) {
+	onFileSelected(event: Event) {
 		const input = event.target as HTMLInputElement;
 		this.uploadFile(input.files);
 	}
 
-	private uploadFile(files: FileList | null) {
+	async uploadFile(files: FileList | null) {
 		if (!files || !files.length) return;
+
 		from(files)
 			.pipe(
-				concatMap((file: File) => this.validateFile(file).pipe(catchError((error: IUploadedFile) => of(error)))),
+				concatMap((file: File) =>
+					this.validateFile(file).pipe(
+						catchError((error: IUploadedFile) => {
+							return of(error);
+						})
+					)
+				),
 				take(this.maximumFilesToUpload())
 			)
 			.subscribe((validatedFile: IUploadedFile) => {
+				console.log(validatedFile);
 				this.uploadedFiles.emit(validatedFile);
 			});
 	}
 
-	private validateFile(file: File): Observable<IUploadedFile> {
+	validateFile(file: File): Observable<IUploadedFile> {
 		const fileReader = new FileReader();
 		return new Observable((observer: Observer<IUploadedFile>) => {
 			const fileSize = Math.floor(file.size / 1024);
-			if (fileSize > MAX_IMAGE_SIZE_KB) {
+			if (fileSize > this.maximumFileSizeInKb()) {
 				observer.error({ errorMessage: uploadErrorMessages.invalidFileSize });
+				return;
 			}
 			fileReader.readAsDataURL(file);
 			fileReader.onload = () => {
@@ -78,16 +88,16 @@ export class FileUploadComponent {
 						observer.complete();
 					};
 					image.onerror = () => {
-						observer.error({ errorMessage: uploadErrorMessages.invalidImage });
+						observer.error({ errorMessage: uploadErrorMessages.invalidImage } as IUploadedFile);
 					};
 					image.src = fileReader.result as string;
 				} else {
-					observer.error({ errorMessage: uploadErrorMessages.invalidFileFormat });
+					observer.error({ errorMessage: uploadErrorMessages.invalidFileFormat } as IUploadedFile);
 				}
 			};
 
 			fileReader.onerror = () => {
-				observer.error({ errorMessage: uploadErrorMessages.invalidFile });
+				observer.error({ errorMessage: uploadErrorMessages.invalidFile } as IUploadedFile);
 			};
 		});
 	}
