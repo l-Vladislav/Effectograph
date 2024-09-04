@@ -1,6 +1,6 @@
 import { NgClass } from "@angular/common";
 import { Component, input, OnInit, output } from "@angular/core";
-import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu-group.model";
+import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu/menu-group.model";
 
 @Component({
 	selector: "app-side-menu",

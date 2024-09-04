@@ -1,7 +1,8 @@
 import { Component, ElementRef, input, output, ViewChild, OnInit, OnDestroy, model } from "@angular/core";
-import { IImageModification, PhotonService } from "../../../services/photon.service";
+import { PhotonService } from "../../../services/photon.service";
 import { AsyncPipe, JsonPipe, NgClass } from "@angular/common";
 import { BehaviorSubject, distinctUntilChanged, Subscription } from "rxjs";
+import { IImageModification } from "../../../models/image-modification.model";
 
 @Component({
 	selector: "app-draw-image",
@@ -12,7 +13,7 @@ import { BehaviorSubject, distinctUntilChanged, Subscription } from "rxjs";
 export class DrawImageComponent implements OnInit, OnDestroy {
 	@ViewChild("imageCanvas", { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
 
-	imageModification$ = input.required<BehaviorSubject<IImageModification>>();
+	imageModification$ = model.required<BehaviorSubject<IImageModification>>();
 	imageFile = model<File>();
 	customClasses = input("");
 
@@ -52,21 +53,21 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 
 		try {
 			setTimeout(async () => {
-				if (!this.imageFile()) return;
+				if (this.imageFile() === undefined) return;
 
 				const imageElement = await this.createImageElement(this.imageFile()!);
 				this.canvas!.nativeElement.width = imageElement.width;
 				this.canvas!.nativeElement.height = imageElement.height;
 
 				ctx?.drawImage(imageElement, 0, 0);
+				await this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
 
-				this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
-
-				const dataURL = this.canvas!.nativeElement.toDataURL("image/png");
+				const dataURL = this.canvas!.nativeElement.toDataURL("image/png"); // TO DO need to add a better way to get the dataURL
 				this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
 				this.isProcessing.emit(false);
-			}, 200);
+			}, 200); // TO DO add a debounce to prevent multiple calls to the server
 		} catch (error) {
+			// TO DO add more robust error handling
 			console.error("Error processing image:", error);
 			this.isProcessing.emit(false);
 		}

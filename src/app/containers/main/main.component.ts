@@ -3,21 +3,23 @@ import { SideMenuComponent } from "../../components/menu/side-menu/side-menu.com
 import { FileUploadComponent } from "../../components/file-upload/file-upload.component";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { DrawImageComponent } from "../../components/image/draw-image/draw-image.component";
-import {
-	AvailableSideMenuGroupTitles,
-	AvailableFiltersMenuItemTitles,
-	MenuItemAction,
-	MenuService,
-	AvailableEffectsMenuItemTitles,
-	AvailableTransformMenuItemTitles,
-	AvailableActionMenuGroupTitles,
-	AvailableActionMenuItemTitles
-} from "../../services/menu.service";
-import { IImageModification, PhotonEffects, PhotonFilters, PhotonTransform } from "../../services/photon.service";
-import { IMenuGroup } from "../../models/menu-group.model";
+import { IMenuGroup } from "../../models/menu/menu-group.model";
 import { ActionMenuComponent } from "../../components/menu/action-menu/action-menu.component";
 import { BehaviorSubject } from "rxjs";
 import { AsyncPipe } from "@angular/common";
+import { uploadFileMimeTypes } from "../../components/file-upload/file-upload.component";
+import { IImageModification } from "../../models/image-modification.model";
+import { MenuItemAction } from "../../models/menu/menu-item-action.model";
+import {
+	AvailableSideMenuGroupTitles,
+	AvailableFiltersMenuItemTitles,
+	AvailableActionMenuGroupTitles,
+	AvailableActionMenuItemTitles,
+	AvailableEffectsMenuItemTitles,
+	AvailableTransformMenuItemTitles
+} from "../../models/menu/menu-titles.enum";
+import { PhotonEffects, PhotonFilters, PhotonTransform } from "../../models/photon-enums";
+import { MenuService } from "../../services/menu.service";
 
 @Component({
 	selector: "app-main",
@@ -28,6 +30,7 @@ import { AsyncPipe } from "@angular/common";
 export class MainComponent implements OnInit {
 	@ViewChild(SideMenuComponent) private modificationMenuComponent!: SideMenuComponent;
 
+	protected uploadFileMimeTypes = uploadFileMimeTypes;
 	uploadedFileInfo?: IUploadedFile;
 	processedImageUrl = "";
 

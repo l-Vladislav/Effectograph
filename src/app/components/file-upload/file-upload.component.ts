@@ -1,17 +1,17 @@
-import { Component, input, output } from "@angular/core";
+import { Component, model, output } from "@angular/core";
 import { IUploadedFile } from "../../models/upload-file.model";
 import { catchError, concatMap, from, Observable, Observer, of, take } from "rxjs";
 import { DecimalPipe } from "@angular/common";
 
 // can be extended if you want to implement a different logic of this component
-enum uploadFileMimeTypes {
-	//all = "",
+export enum uploadFileMimeTypes {
+	all = "",
 	img = "image/(png|jpeg)"
 }
 
 export enum uploadErrorMessages {
 	invalidFile = "Invalid file",
-	invalidFileFormat = "Invalid file format",
+	invalidFileType = "Invalid file type",
 	invalidFileSize = "Invalid file size",
 	invalidImage = "Invalid image"
 }
@@ -23,9 +23,9 @@ export enum uploadErrorMessages {
 	templateUrl: "./file-upload.component.html"
 })
 export class FileUploadComponent {
-	maximumFilesToUpload = input(1);
-	maximumFileSizeInKb = input(1024);
-	uploadFileMimeTypes = input(uploadFileMimeTypes.img);
+	uploadFileMimeTypes = model.required<uploadFileMimeTypes>();
+	maximumFilesToUpload = model(1);
+	maximumFileSizeInKb = model(1024);
 
 	uploadedFiles = output<IUploadedFile>();
 
@@ -66,7 +66,6 @@ export class FileUploadComponent {
 				take(this.maximumFilesToUpload())
 			)
 			.subscribe((validatedFile: IUploadedFile) => {
-				console.log(validatedFile);
 				this.uploadedFiles.emit(validatedFile);
 			});
 	}
@@ -92,7 +91,7 @@ export class FileUploadComponent {
 					};
 					image.src = fileReader.result as string;
 				} else {
-					observer.error({ errorMessage: uploadErrorMessages.invalidFileFormat } as IUploadedFile);
+					observer.error({ errorMessage: uploadErrorMessages.invalidFileType } as IUploadedFile);
 				}
 			};
 
@@ -103,7 +102,7 @@ export class FileUploadComponent {
 	}
 
 	private isImage(mimeType: string): boolean {
-		if (!this.uploadFileMimeTypes().length) return true;
-		return mimeType.match(this.uploadFileMimeTypes()) !== null;
+		const result = mimeType.match(this.uploadFileMimeTypes()) !== null;
+		return result;
 	}
 }

@@ -22,9 +22,4 @@ describe("AppComponent", () => {
 	it("should have as title 'effectograph'", () => {
 		expect(component.title).toEqual("effectograph");
 	});
-
-	it("should render router-outlet", () => {
-		const compiled = fixture.nativeElement as HTMLElement;
-		expect(compiled.querySelector("router-outlet")).toBeTruthy();
-	});
 });

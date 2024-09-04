@@ -1,27 +1,29 @@
-<div class="bg-gray-100 rounded-full flex" [ngClass]="{ 'opacity-50 pointer-events-none': disabled() }">
+<div class="bg-gray-100 rounded-full flex w-100" [ngClass]="{ 'opacity-50 pointer-events-none': disabled() }" role="toolbar" aria-label="Action menu">
 	@for (actionMenuGroup of actionMenuGroups(); track actionMenuGroup; let i = $index) {
-		@for (menuItem of actionMenuGroup.items; track menuItem; let j = $index) {
-			<button class="group text-white grow w-1 p-1 hover:bg-gray-200"
-					[ngClass]="{
-								'rounded-l-full': i + j === 0,
-								'rounded-r-full': i === actionMenuGroups().length - 1 && j === actionMenuGroup.items.length - 1,
-								'border-r-2' : j === actionMenuGroup.items.length - 1 && i !== actionMenuGroups().length - 1
-								
-					}"
-					(click)="menuItemSelected.emit({ menuGroupTitle: actionMenuGroup.title, menuItemTitle: menuItem.title })"
-					(mouseleave)="menuItemHovered.emit('')" 
-					(mouseenter)="menuItemHovered.emit(menuItem.title)" 
-					>
-					@if (menuItem.iconName) {
-						<span class="text-gray-500 group-hover:text-gray-800 material-icons align-middle">
-							{{ menuItem.iconName ? menuItem.iconName : menuItem.title }}
-						</span>
-					} @else {
-						<div class="text-gray-500 group-hover:text-gray-800 mb-1">
-							{{ menuItem.title }}
-						</div>
-					}
-			</button>
-		}
+		<div class="flex flex-grow" role="group" [attr.aria-label]="actionMenuGroup.title">
+			@for (menuItem of actionMenuGroup.items; track menuItem; let j = $index) {
+				<button class="group text-white flex-grow p-1 hover:bg-gray-200"
+						[ngClass]="{
+									'rounded-l-full': i === 0 && j === 0,
+									'rounded-r-full': i === actionMenuGroups().length - 1 && j === actionMenuGroup.items.length - 1,
+									'border-r-2' : j === actionMenuGroup.items.length - 1 && i !== actionMenuGroups().length - 1
+						}"
+						(click)="menuItemSelected.emit({ menuGroupTitle: actionMenuGroup.title, menuItemTitle: menuItem.title })"
+						(mouseleave)="menuItemHovered.emit('')" 
+						(mouseenter)="menuItemHovered.emit(menuItem.title)" 
+						[attr.aria-label]="menuItem.title"
+						>
+						@if (menuItem.iconName) {
+							<span class="text-gray-500 group-hover:text-gray-800 material-icons align-middle" aria-hidden="true">
+								{{ menuItem.iconName }}
+							</span>
+						} @else {
+							<div class="text-gray-500 group-hover:text-gray-800">
+								{{ menuItem.title }}
+							</div>
+						}
+				</button>
+			}
+		</div>
 	}
 </div>

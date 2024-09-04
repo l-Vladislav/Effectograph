@@ -1,13 +1,16 @@
-<div class="flex flex-col" [ngClass]="{'opacity-50 pointer-events-none': disabled()}">
-	<!-- Iterate over menu groups -->
+<div class="flex flex-col" [ngClass]="{'opacity-50 pointer-events-none': disabled()}" role="navigation" aria-label="Side menu">
 	@for (group of sideMenuGroups(); track group; let groupIdx = $index) {
-		<div (mousedown)="openMenu(groupIdx)" class="border-b p-4 flex items-center cursor-pointer hover:border-gray-800"
-			[ngClass]="{
+		<div role="button" 
+			 (mousedown)="openMenu(groupIdx)" 
+			 class="border-b p-4 flex items-center cursor-pointer hover:border-gray-800"
+			 [ngClass]="{
 				'border-gray-300': groupIdx !== currentOpenGroupIdx, 
 				'border-gray-500': groupIdx === currentOpenGroupIdx
-			}"
+			 }"
+			 [attr.aria-expanded]="groupIdx === currentOpenGroupIdx"
+			 [attr.aria-controls]="'menu-group-' + groupIdx"
 		>
-			<button class="mr-4" [disabled]="disabled()">
+			<button class="mr-4" [disabled]="disabled()" aria-hidden="true" tabindex="-1">
 				<span class="mt-2 transform transition-transform duration-600 material-icons text-gray-500"
 					[ngClass]="{'rotate-90': groupIdx === currentOpenGroupIdx}"
 				>
@@ -18,9 +21,12 @@
 		</div>
 
 		@if (groupIdx === currentOpenGroupIdx) {
-			<div class="p-4 ml-4" [ngClass]="{'lg:h-80': groupIdx !== group.items.length}">
+			<div class="p-4 ml-4" [ngClass]="{'lg:h-80': groupIdx !== group.items.length}" 
+				 [id]="'menu-group-' + groupIdx" role="menu" [attr.aria-label]="group.title + ' submenu'">
 				@for (groupItem of group.items; track groupItem; let itemIdx = $index) {
-					<div class="mt-1" (mousedown)="selectGroupItem(group.title, groupItem.title, groupIdx, itemIdx)">
+					<div class="mt-1" role="menuitem" 
+						 (mousedown)="selectGroupItem(group.title, groupItem.title, groupIdx, itemIdx)"
+						 [attr.aria-current]="isCurrentItemActive(groupIdx, itemIdx) ? 'page' : null">
 						<span class="capitalize cursor-pointer hover:border-b-2 border-gray-800" 
 							[ngClass]="{ 'font-bold': isCurrentItemActive(groupIdx, itemIdx) }">
 							{{groupItem.title}}
