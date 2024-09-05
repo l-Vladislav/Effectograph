@@ -65,9 +65,5 @@ npm test
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Acknowledgments
 - Silvia O'Dwyer for the Photon library used for image processing
