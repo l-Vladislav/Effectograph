@@ -68,7 +68,8 @@
 	<div class="w-fixed w-full flex-shrink flex-grow-0 px-2 lg:pt-32 sm:pt-5">
 		<div [hidden]="!uploadedFileInfo" class="items-start justify-center bg-white pr-5 pt-6 md:pt-20">
 			@if (uploadedFileInfo?.file) {
-				<app-side-menu	[disabled]="isImageProcessing || !uploadedFileInfo"
+				<app-side-menu #sideMenu	
+								[disabled]="isImageProcessing || !uploadedFileInfo"
 								[sideMenuGroups]="sideMenuGroups" 
 								(menuItemSelected)="modificationMenuItemSelected($event.menuGroupTitle, $event.menuItemTitle)" >
 				</app-side-menu>

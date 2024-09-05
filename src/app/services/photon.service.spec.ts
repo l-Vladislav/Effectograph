@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { PhotonService } from "./photon.service";
-import { PHOTON } from "../tokens/photon.token";
+import { PHOTON, PhotonService } from "./photon.service";
 import { PhotonEffects, PhotonFilters, PhotonTransform } from "../models/photon-enums";
 import { IImageModification } from "../models/image-modification.model";
 import { IPhoton } from "../models/photon/photon.model";

@@ -3,8 +3,7 @@ import { DrawImageComponent } from "./draw-image.component";
 import { BehaviorSubject } from "rxjs";
 import { IImageModification } from "../../../models/image-modification.model";
 import { PhotonEffects, PhotonFilters, PhotonTransform } from "../../../models/photon-enums";
-import { PhotonService } from "../../../services/photon.service";
-import { PHOTON } from "../../../tokens/photon.token";
+import { PHOTON, PhotonService } from "../../../services/photon.service";
 import { IPhoton } from "../../../models/photon/photon.model";
 
 const VALID_IMG_FILE = "assets/test-images/valid.jpeg";

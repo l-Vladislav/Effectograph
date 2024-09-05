@@ -1,5 +1,5 @@
 import { NgClass } from "@angular/common";
-import { Component, input, OnInit, output } from "@angular/core";
+import { Component, input, model, OnInit, output } from "@angular/core";
 import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu/menu-group.model";
 
 @Component({
@@ -9,8 +9,8 @@ import { IMenuGroup, IMenuSelectedItem } from "../../../models/menu/menu-group.m
 	templateUrl: "./side-menu.component.html"
 })
 export class SideMenuComponent implements OnInit {
-	sideMenuGroups = input.required<IMenuGroup[]>();
-	selectFirstElementByDefault = input(true);
+	sideMenuGroups = model.required<IMenuGroup[]>();
+	selectFirstElementByDefault = model(true);
 
 	disabled = input(false, {
 		transform: (value: boolean | string) => (typeof value === "string" ? value === "" : value)

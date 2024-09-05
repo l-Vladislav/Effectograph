@@ -28,9 +28,9 @@ import { MenuService } from "../../services/menu.service";
 	imports: [FileUploadComponent, SideMenuComponent, DrawImageComponent, ActionMenuComponent, AsyncPipe]
 })
 export class MainComponent implements OnInit {
-	@ViewChild(SideMenuComponent) private modificationMenuComponent!: SideMenuComponent;
+	@ViewChild("sideMenu") modificationMenuComponent!: SideMenuComponent;
 
-	protected uploadFileMimeTypes = uploadFileMimeTypes;
+	uploadFileMimeTypes = uploadFileMimeTypes;
 	uploadedFileInfo?: IUploadedFile;
 	processedImageUrl = "";
 
@@ -58,11 +58,11 @@ export class MainComponent implements OnInit {
 		this.initMenuItemActions();
 	}
 
-	protected onImageFileUploaded(uploadedFile: IUploadedFile) {
+	onImageFileUploaded(uploadedFile: IUploadedFile) {
 		this.uploadedFileInfo = uploadedFile;
 	}
 
-	protected modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
+	modificationMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
 		const combineMenuItem = this.menuService.combineMenuItem(
 			menuGroupTitle as AvailableSideMenuGroupTitles,
 			menuItemTitle as AvailableFiltersMenuItemTitles
@@ -70,7 +70,7 @@ export class MainComponent implements OnInit {
 		this.menuService.invokeMenuItemFunction(combineMenuItem, this.modificationMenuItemActions);
 	}
 
-	protected actionMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
+	actionMenuItemSelected(menuGroupTitle: string, menuItemTitle: string) {
 		const combineMenuItem = this.menuService.combineMenuItem(
 			menuGroupTitle as AvailableActionMenuGroupTitles,
 			menuItemTitle as AvailableActionMenuItemTitles
@@ -78,7 +78,7 @@ export class MainComponent implements OnInit {
 		this.menuService.invokeMenuItemFunction(combineMenuItem, this.actionMenuItemActions);
 	}
 
-	protected imageProcessingStatusChange(isProcessing: boolean) {
+	imageProcessingStatusChange(isProcessing: boolean) {
 		setTimeout(() => (this.isImageProcessing = isProcessing), 0);
 	}
 

@@ -1,9 +1,12 @@
 import { Injectable, Inject } from "@angular/core";
-import { PHOTON } from "../tokens/photon.token";
 import { PhotonFilters, PhotonEffects, PhotonTransform } from "../models/photon-enums";
 import { IImageModification } from "../models/image-modification.model";
 import { IPhoton } from "../models/photon/photon.model";
 import { IPhotonImage } from "../models/photon/photon-image.model";
+
+import { InjectionToken } from "@angular/core";
+
+export const PHOTON = new InjectionToken<IPhoton>("silvia-odwyer/photon");
 
 @Injectable({
 	providedIn: "root"

@@ -71,11 +71,11 @@ describe("UploadComponent", () => {
 
 	it("should emit the validation error when a file with wrong extension is uploaded", done => {
 		const mockValidatedFile: IUploadedFile = { errorMessage: uploadErrorMessages.invalidFileType };
-
 		spyOn(component.uploadedFiles, "emit").and.callFake((emittedFile: IUploadedFile) => {
 			expect(emittedFile).toEqual(mockValidatedFile);
 			done();
 		});
+
 		loadImageFile(TestFiles.IMG_FILE_WITH_WRONG_EXTENSION, "test.tiff", "image/tiff").then(loadedFile => {
 			const mockFileList = {
 				0: loadedFile,
