@@ -169,9 +169,11 @@ export class MainComponent implements OnInit {
 	private downloadImage() {
 		if (this.uploadedFileInfo && this.processedImageUrl) {
 			const link = document.createElement("a");
+			link.setAttribute('style', 'display:none;');
+			document.body.appendChild(link);
 			link.href = this.processedImageUrl;
 			link.download = "modified_" + this.uploadedFileInfo.file!.name;
-			document.body.appendChild(link);
+			link.target = '_blank';
 			link.click();
 			document.body.removeChild(link);
 		} else {

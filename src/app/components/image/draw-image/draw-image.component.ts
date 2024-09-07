@@ -62,7 +62,8 @@ export class DrawImageComponent implements OnInit, OnDestroy {
 				ctx?.drawImage(imageElement, 0, 0);
 				await this.photonService.applyImageModification(this.canvas!.nativeElement, imageModifications);
 
-				const dataURL = this.canvas!.nativeElement.toDataURL("image/jpeg"); // TO DO need to add a better way to get the dataURL
+				const dataURL = this.canvas!.nativeElement.toDataURL("image/jpeg"); // TO DO need to add a better way to get the dataURL, need to use canvas.toBlob()
+				//TO DO check file-saver and canvas-toBlob packages
 				
 				this.processedImageMetadata.emit({ dataUrl: dataURL, height: imageElement.width });
 				this.isProcessing.emit(false);
