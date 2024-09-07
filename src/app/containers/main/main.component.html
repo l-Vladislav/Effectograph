@@ -22,7 +22,7 @@
 				<div class="pt-10">
 					<div class="flex items-center justify-center w-full">
 						@if (!uploadedFileInfo || !uploadedFileInfo!.file) {
-							<app-file-upload	[maximumFileSizeInKb]="3072"
+							<app-file-upload	[maximumFileSizeInKb]="10000"
 												[maximumFilesToUpload]="1"
 												[uploadFileMimeTypes]="uploadFileMimeTypes.img"
 												(uploadedFiles)="onImageFileUploaded($event)"></app-file-upload>

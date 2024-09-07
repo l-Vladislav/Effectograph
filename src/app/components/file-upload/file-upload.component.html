@@ -11,7 +11,7 @@
 			<span class="font-semibold">Click to upload</span> or drag and drop
 		</p>
 		<p class="text-xs text-gray-500">PNG, JPG or JPEG </p>
-		<p class="text-xs text-gray-500">The maximum file size is <span class="font-semibold"> {{ maximumFileSizeInKb() / 1024 | number }} MB</span></p>
+		<p class="text-xs text-gray-500">The maximum file size is <span class="font-semibold"> {{ maximumFileSizeInKb() / 1024 | number: '1.0-0' }} MB</span></p>
 	</div>
 	<input id="dropzone-file" type="file" class="hidden" [multiple]="maximumFilesToUpload() > 1" (change)="onFileSelected($event)" />
 </label>
